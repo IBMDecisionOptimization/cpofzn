@@ -50,7 +50,7 @@ CMake needs to know the installation directory of IBM CPLEX Optimization Studio.
 If it is not detected automatically, you can specify using -DCPLEX_STUDIO_DIR
 as mentioned above.
 
-If you are on a Windows system, you may the following BAT script useful.
+If you are on a Windows system, you may find the following BAT script useful.
 ```
    SET        CMAKE_EXE=<Path of the cmake.exe file>
    SET  FLEX_EXECUTABLE=<Path of the win_flex.exe file>
@@ -75,14 +75,15 @@ register CpoFzn in your MiniZinc installation. To do that:
 1. During the build of the `cpofzn` executable a file named `com.ibm.cpo.msc`
    was generated.  This file contains information about locations of
    files needed by Minizinc.
-2. If you open `com.ibm.cpo.msc` with an editor, you should see the fields
-   `executable` and `mznlib`.  Should you move this file or directory, then
-   this file should be changed accordingly.  Note that the paths should
-   always be absolute.
+2. If you open `com.ibm.cpo.msc` with an editor, you will see the fields
+   `executable` and `mznlib`.  Should you move the referenced executable
+   or the mznlib directory somewhere else, then you should change the relevant
+   field(s) in the `com.ibm.cpo.msc` file accordingly.  Note that the paths
+   should always be absolute.
 3. Copy the file `com.ibm.cpo.msc` into one of the directories searched by MiniZinc for solver
 configuration files (see the MiniZinc [documentation](https://www.minizinc.org/doc-2.5.0/en/fzn-spec.html#solver-configuration-files)):
-    * `$HOME/.minizinc/solvers` or `Application Data` directory on Windows,
-    * the `minizinc/solvers/` directory of your MiniZinc installation,
+    * `$HOME/.minizinc/solvers` on Linux and Mac OS
+    * the `share/minizinc/solvers/` sub-directory of your MiniZinc installation,
     * in any directory listed in the `MZN_SOLVER_PATH` environment variable.
 
 ## Usage
