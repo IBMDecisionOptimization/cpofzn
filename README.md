@@ -10,6 +10,9 @@ To get MiniZinc running with CpoFzn, follow these steps.
 
 ### Prerequisites
 
+Unless you want to use a development version of CpoFzn, we suggest that you use one of versioned tarballs,
+which can be found [here](https://www.github.com/IBMDecisionOptimization/cpofzn/releases).
+
 You will need to have CPLEX Optimization Studio 20.1 installed.  If you don't have it installed already:
 
 * If you are an academic, you can access CPLEX Optimization Studio for free [here](https://www.ibm.com/academic/technology/data-science),
