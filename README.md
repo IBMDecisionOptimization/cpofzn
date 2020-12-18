@@ -65,6 +65,7 @@ If you are on a Windows system, you may find the following BAT script useful.
    "%CMAKE_EXE%" --build . --clean-first --config Release
 ```
 The resulting cpofzn.exe file can be found in the Release sub-directory.
+You can safely ignore any warnings issued by your compiler.  They are harmless.
 
 
 ### Solver registration
