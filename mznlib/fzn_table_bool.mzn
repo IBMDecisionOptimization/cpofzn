@@ -3,4 +3,7 @@
 % consider each row in t to be a tuple and t as a set of tuples.
 %-----------------------------------------------------------------------------%
 
-predicate fzn_table_bool(array[int] of var bool: x, array[int, int] of bool: t);
+predicate cpo_table_bool(array[int] of var int: x, array[int] of bool: t);
+
+predicate fzn_table_bool(array[int] of var bool: x, array[int, int] of bool: t) = cpo_table_bool(x, array1d(t));
+%predicate fzn_table_bool(array[int] of var bool: x, array[int] of bool: t);

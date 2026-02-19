@@ -201,6 +201,10 @@ float_literal           -?[0-9]+\.[0-9]+|-?[0-9]+\.[0-9]+[Ee][-+]?[0-9]+|-?[0-9]
 "fzn_table_bool_reif"     { return TABLE_BOOL_REIF; }
 "fzn_table_int"           { return TABLE_INT; }
 "fzn_table_int_reif"      { return TABLE_INT_REIF; }
+"cpo_table_bool"          { return TABLE_BOOL1; }
+"cpo_table_bool_reif"     { return TABLE_BOOL_REIF1; }
+"cpo_table_int"           { return TABLE_INT1; }
+"cpo_table_int_reif"      { return TABLE_INT_REIF1; }
 "fzn_bin_packing_load"    { return BIN_PACKING_LOAD; }
 "fzn_bin_packing_capa"    { return BIN_PACKING_CAPA; }
 "fzn_nvalue"              { return NVALUE; }
@@ -235,6 +239,8 @@ float_literal           -?[0-9]+\.[0-9]+|-?[0-9]+\.[0-9]+[Ee][-+]?[0-9]+|-?[0-9]
 "seq_search"              { return SEQ_SEARCH; }
 "int_search"              { return INT_SEARCH; }
 "bool_search"             { return BOOL_SEARCH; }
+"warm_start"              { return WARM_START_SEARCH; }
+"constraint_name"         { return CONSTRAINT_NAME_IN_SEARCH; }
 "first_fail"              { return FIRST_FAIL; }
 "complete"                { return COMPLETE; }
 "input_order"             { return INPUT_ORDER; }
@@ -259,7 +265,6 @@ float_literal           -?[0-9]+\.[0-9]+|-?[0-9]+\.[0-9]+[Ee][-+]?[0-9]+|-?[0-9]
 
 {underscore_ident} { return yyextra->decodeSymbol(yytext, yylval); }
 
-  /* String literal is actually not used in the grammar so it is commented out
 {string_literal} {
         // From the doc: Strings have the same syntax as in C programs (namely,
         // they are delimited by double quotes and the backslash character is
@@ -268,7 +273,6 @@ float_literal           -?[0-9]+\.[0-9]+|-?[0-9]+\.[0-9]+[Ee][-+]?[0-9]+|-?[0-9]
         yylval->_string = strdup(yytext);
         return STRING_LITERAL;
     }
-  */
 
 {int_literal} {
         // Flatzinc uses non-standard 0o prefix for octal numbers so we cannot
