@@ -276,6 +276,8 @@ static void generateConfigFile(IloCP cp, const char* cfgfilename, const char* ex
 int main(int argc, const char** argv) {
 
   IloEnv env;
+  IlcInt result = 0;
+  try {
   CP cp(env);
 
   Parameters params = parseCommandLine(cp, argc, argv);
@@ -292,9 +294,7 @@ int main(int argc, const char** argv) {
   if (!params._printLog)
     cp.setParameter(IloCP::LogVerbosity, IloCP::Quiet);
 
-  IlcInt result = 0;
-
-  try {
+  //try {
 
     auto startTime = std::chrono::system_clock::now();
     OutputSpecification outputSpecification = readFzn(cp, params._inputFilename);

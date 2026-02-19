@@ -68,7 +68,7 @@ static void yyerror(YYLTYPE* location, void* scanner, FznReader* reader, const c
 // Token kinds
 %token  <_int>             INT_LITERAL     "integer value"
 %token  <_int>             BOOL_LITERAL    "boolean value"
-%token  <_string>          NEW_IDENT       "uknown identifier"
+%token  <_string>          NEW_IDENT       "unknown identifier"
 %token  <_float>           FLOAT_LITERAL   "float value"
 %token  <_boolExpr>        BOOL_VAR        "boolean variable"
 %token  <_intExpr>         INT_VAR         "integer variable"
@@ -82,9 +82,7 @@ static void yyerror(YYLTYPE* location, void* scanner, FznReader* reader, const c
 %token  <_boolConstant>    BOOL_CONSTANT   "boolean constant"
 %token  <_intConstant>     INT_CONSTANT    "integer constant"
 %token  <_floatConstant>   FLOAT_CONSTANT  "float constant"
-
-// String literal is actually not used in the grammar so it is commented out:
-// %token  <_string>          STRING_LITERAL  "string"
+%token  <_string>          STRING_LITERAL  "string"
 
 %token  ARRAY       "array"
 %token  BOOL        "bool"
@@ -208,6 +206,10 @@ static void yyerror(YYLTYPE* location, void* scanner, FznReader* reader, const c
 %token TABLE_BOOL_REIF         "fzn_table_bool_reif"
 %token TABLE_INT               "fzn_table_int"
 %token TABLE_INT_REIF          "fzn_table_int_reif"
+%token TABLE_BOOL1             "cpo_table_bool"
+%token TABLE_BOOL_REIF1        "cpo_table_bool_reif"
+%token TABLE_INT1              "cpo_table_int"
+%token TABLE_INT_REIF1         "cpo_table_int_reif"
 %token BIN_PACKING_LOAD        "fzn_bin_packing_load"
 %token BIN_PACKING_CAPA        "fzn_bin_packing_capa"
 %token NVALUE                  "fzn_nvalue"
@@ -224,6 +226,7 @@ static void yyerror(YYLTYPE* location, void* scanner, FznReader* reader, const c
 %token SEQ_SEARCH              "seq_search"
 %token INT_SEARCH              "int_search"
 %token BOOL_SEARCH             "bool_search"
+%token WARM_START_SEARCH       "warm_start"
 %token COMPLETE                "complete"
 %token FIRST_FAIL              "first_fail"
 %token INPUT_ORDER             "input_order"
@@ -242,6 +245,7 @@ static void yyerror(YYLTYPE* location, void* scanner, FznReader* reader, const c
 %token INDOMAIN_SPLIT          "indomain_split"
 %token INDOMAIN_REVERSE_SPLIT  "indomain_reverse_split"
 %token INDOMAIN_INTERVAL       "indomain_interval"
+%token CONSTRAINT_NAME_IN_SEARCH "constraint_name"
 
 
 %type <_bool> constbool
@@ -344,6 +348,12 @@ pred_decl_item:
   | PREDICATE CPO_SUBCIRCUIT '(' INT':' anyid',' ARRAY '[' INT ']' OF VAR INT ':' anyid ')'
   | PREDICATE TABLE_BOOL'('ARRAY'['INT']' OF VAR BOOL':' anyid',' ARRAY'['INT',' INT']' OF BOOL':' anyid')'
   | PREDICATE TABLE_INT'('ARRAY'['INT']' OF VAR INT':' anyid',' ARRAY'['INT',' INT']' OF INT':' anyid')'
+  | PREDICATE TABLE_BOOL_REIF'('ARRAY'['INT']' OF VAR BOOL':' anyid',' ARRAY'['INT',' INT']' OF BOOL':' anyid',' VAR BOOL':' anyid')'
+  | PREDICATE TABLE_INT_REIF'('ARRAY'['INT']' OF VAR INT':' anyid',' ARRAY'['INT',' INT']' OF INT':' anyid',' VAR BOOL':' anyid')'
+  | PREDICATE TABLE_BOOL1'('ARRAY'['INT']' OF VAR BOOL':' anyid',' ARRAY '[' INT ']' OF BOOL':' anyid')'
+  | PREDICATE TABLE_INT1'('ARRAY'['INT']' OF VAR INT':' anyid',' ARRAY '[' INT ']' OF INT':' anyid')'
+  | PREDICATE TABLE_BOOL_REIF1'('ARRAY'['INT']' OF VAR BOOL':' anyid',' ARRAY '[' INT ']' OF BOOL':' anyid',' VAR BOOL':' anyid')'
+  | PREDICATE TABLE_INT_REIF1'('ARRAY'['INT']' OF VAR INT':' anyid',' ARRAY '[' INT ']' OF INT':' anyid',' VAR BOOL':' anyid')'
 
 anyid:
     NEW_IDENT { free($1); }
@@ -600,6 +610,10 @@ constraint_elem:
   | TABLE_BOOL_REIF'('boolexprarray',' boolarray',' boolexpr')' c_annots      { reader->assign($7, reader->tableConstraint($3, $5, @1), @1, $c_annots); }
   | TABLE_INT '(' intexprarray ',' intarray ')' c_annots                      { reader->add(reader->tableConstraint($3, $5, @1), @1, $c_annots); }
   | TABLE_INT_REIF'('intexprarray',' intarray',' boolexpr')' c_annots         { reader->assign($7, reader->tableConstraint($3, $5, @1), @1, $c_annots); }
+  | TABLE_BOOL1'(' boolexprarray ',' boolarray ')' c_annots                   { reader->add(reader->tableConstraint($3, $5, @1), @1, $c_annots); }
+  | TABLE_BOOL_REIF1'('boolexprarray',' boolarray',' boolexpr')' c_annots     { reader->assign($7, reader->tableConstraint($3, $5, @1), @1, $c_annots); }
+  | TABLE_INT1 '(' intexprarray ',' intarray ')' c_annots                     { reader->add(reader->tableConstraint($3, $5, @1), @1, $c_annots); }
+  | TABLE_INT_REIF1'('intexprarray',' intarray',' boolexpr')' c_annots        { reader->assign($7, reader->tableConstraint($3, $5, @1), @1, $c_annots); }
   | BIN_PACKING_LOAD'('intexprarray',' intexprarray',' intarray')' c_annots   { reader->add(MODEL.pack(reader->addPrefix(0, $3), $5, $7), @1, $c_annots); }
   | BIN_PACKING_CAPA '(' intarray ',' intexprarray ',' intarray ')' c_annots  { reader->add(reader->packFixedCaps($3, $5, $7), @1, $c_annots); }
   | NVALUE '(' intexpr ',' intexprarray ')' c_annots                          { reader->assign($3, MODEL.countDifferent($5), @1, $c_annots); }
@@ -982,6 +996,8 @@ solve_goals:
 solve_goal:
     search_type '(' floatexprarray ',' varchoice ',' valchoice ',' strategy ')'   { reader->warning(@1, "Ignoring solve goal (not supported)."); }
   | SEQ_SEARCH '(' '[' solve_goals ']' ')'                                        { reader->warning(@1, "Ignoring solve goal (not supported)."); }
+  | WARM_START_SEARCH '(' intexprarray ',' intarray ')'                           { reader->warning(@1, "Ignoring solve goal (not supported)."); }
+  | CONSTRAINT_NAME_IN_SEARCH '(' STRING_LITERAL ')'                              { reader->warning(@1, "Ignoring solve goal (not supported)."); }
 
 search_type:
     INT_SEARCH
